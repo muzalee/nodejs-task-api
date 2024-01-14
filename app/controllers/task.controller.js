@@ -10,7 +10,7 @@ exports.create = [
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({ status: false, errors: errors.array() })
     }
 
     const newTask = new Task({
@@ -95,7 +95,7 @@ exports.update = [
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({ status: false, errors: errors.array() })
     }
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -167,7 +167,7 @@ exports.markComplete = [
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({ status: false, errors: errors.array() })
     }
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {

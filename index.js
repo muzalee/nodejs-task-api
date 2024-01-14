@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const db = require('./app/config/db.config')
 const taskRoutes = require('./app/routes/task.route')
+const authRoutes = require('./app/routes/auth.route')
 const cors = require('cors')
 
 const app = express()
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello world!' })
 })
 
+app.use('/auth', authRoutes)
 app.use('/tasks', taskRoutes)
 
 // add not found custom message
