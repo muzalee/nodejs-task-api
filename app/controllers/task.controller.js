@@ -48,6 +48,10 @@ exports.findAll = (req, res) => {
     })
   }
 
+  if (req.query.is_archived !== undefined) {
+    query.isArchived = req.query.is_archived === '1'
+  }
+
   Task.find(query).sort(sort)
     .then(tasks => {
       if (tasks) {
@@ -109,7 +113,7 @@ exports.update = [
         return task.save()
       })
       .then(updatedTask => {
-        res.status(200).send(updatedTask)
+        res.status(200).send({ status: true, data: updatedTask })
       })
       .catch(err => {
         res.status(500).send({ status: false, msg: err })
@@ -117,59 +121,39 @@ exports.update = [
   }
 ]
 
-exports.delete = (req, res) => {
-  Task.findByIdAndRemove(req.params.id)
-    .then(deletedTask => {
-      if (deletedTask) {
-        res.status(200).send(deletedTask)
-      } else {
-        res.status(404).send({ message: 'Task not found.' })
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
-
-exports.findArchived = (req, res) => {
-  Task.find({ isArchived: true })
-    .then(archivedTasks => {
-      if (archivedTasks) {
-        res.status(200).send(archivedTasks)
-      } else {
-        res.status(404).send({ message: 'No archived tasks found.' })
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
-
 exports.archive = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ status: false, msg: 'Task not found.' })
+  }
+
   Task.findByIdAndUpdate(req.params.id, { isArchived: true }, { new: true })
     .then(archivedTask => {
       if (archivedTask) {
-        res.status(200).send(archivedTask)
+        res.status(200).send({ staus: true, data: archivedTask })
       } else {
-        res.status(404).send({ message: 'Task not found.' })
+        res.status(404).send({ status: false, msg: 'Task not found.' })
       }
     })
     .catch(err => {
-      res.status(500).send(err)
+      res.status(500).send({ status: false, msg: err })
     })
 }
 
 exports.restore = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ status: false, msg: 'Task not found.' })
+  }
+
   Task.findByIdAndUpdate(req.params.id, { isArchived: false }, { new: true })
     .then(restoredTask => {
       if (restoredTask) {
         res.status(200).send(restoredTask)
       } else {
-        res.status(404).send({ message: 'Task not found.' })
+        res.status(404).send({ status: false, msg: 'Task not found.' })
       }
     })
     .catch(err => {
-      res.status(500).send(err)
+      res.status(500).send({ status: false, msg: err })
     })
 }
 
@@ -178,6 +162,20 @@ exports.markComplete = (req, res) => {
     .then(completedTask => {
       if (completedTask) {
         res.status(200).send(completedTask)
+      } else {
+        res.status(404).send({ message: 'Task not found.' })
+      }
+    })
+    .catch(err => {
+      res.status(500).send(err)
+    })
+}
+
+exports.delete = (req, res) => {
+  Task.findByIdAndRemove(req.params.id)
+    .then(deletedTask => {
+      if (deletedTask) {
+        res.status(200).send(deletedTask)
       } else {
         res.status(404).send({ message: 'Task not found.' })
       }
