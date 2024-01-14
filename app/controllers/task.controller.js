@@ -79,19 +79,43 @@ exports.findOne = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
-  Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then(updatedTask => {
-      if (updatedTask) {
+exports.update = [
+  check('title').notEmpty().withMessage('Title is required'),
+  check('priority').isInt({ gt: 0, lt: 4 }).withMessage('Priority must be between 1 and 3'),
+  check('due_date').matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Due date must be in the format YYYY-MM-DD'),
+  (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ status: false, msg: 'Task not found.' })
+    }
+
+    Task.findById(req.params.id)
+      .then(task => {
+        if (!task) {
+          return res.status(404).json({ status: false, msg: 'Task not found.' })
+        }
+
+        if (req.body.due_date) {
+          req.body.dueDate = new Date(req.body.due_date)
+        }
+
+        task.set(req.body)
+
+        return task.save()
+      })
+      .then(updatedTask => {
         res.status(200).send(updatedTask)
-      } else {
-        res.status(404).send({ message: 'Task not found.' })
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
+      })
+      .catch(err => {
+        res.status(500).send({ status: false, msg: err })
+      })
+  }
+]
 
 exports.delete = (req, res) => {
   Task.findByIdAndRemove(req.params.id)
@@ -100,20 +124,6 @@ exports.delete = (req, res) => {
         res.status(200).send(deletedTask)
       } else {
         res.status(404).send({ message: 'Task not found.' })
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
-
-exports.deleteAll = (req, res) => {
-  Task.remove({})
-    .then(deletedTasks => {
-      if (deletedTasks) {
-        res.status(200).send(deletedTasks)
-      } else {
-        res.status(404).send({ message: 'No tasks found.' })
       }
     })
     .catch(err => {
