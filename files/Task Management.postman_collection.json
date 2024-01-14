@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "4531964a-de88-4fd6-b95c-d694aab08db9",
+		"name": "Task Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27923172"
+	},
+	"item": [
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Task List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/tasks?sort=dueDate",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "dueDate",
+									"description": "-dueDate, dueDate, priority, -priority"
+								},
+								{
+									"key": "is_archived",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "is_completed",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c3c8b8c8eed4bb7a6586",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive Tasks",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c3c8b8c8eed4bb7a6586/archive",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586",
+								"archive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c3c8b8c8eed4bb7a6586/restore",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as Complete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"is_completed\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c3c8b8c8eed4bb7a6586/complete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c6863267cf5d92c06f8c",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c6863267cf5d92c06f8c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Task 3\",\r\n    \"description\": \"test description\",\r\n    \"priority\": 2,\r\n    \"due_date\": \"2024-02-25\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/tasks",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Task",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Task 3\",\r\n    \"description\": \"test description\",\r\n    \"priority\": 2,\r\n    \"due_date\": \"2024-02-26\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/tasks/65a3c6863267cf5d92c06f8c",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tasks",
+								"65a3c6863267cf5d92c06f8c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task (Authenticated)",
+			"item": [
+				{
+					"name": "Task List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/user/tasks?sort=dueDate",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "dueDate",
+									"description": "-dueDate, dueDate, priority, -priority"
+								},
+								{
+									"key": "is_archived",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "is_completed",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a4048ccdb10bc078aa3343",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a4048ccdb10bc078aa3343"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive Tasks",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a3c3c8b8c8eed4bb7a6586/archive",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586",
+								"archive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a3c3c8b8c8eed4bb7a6586/restore",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a3c3c8b8c8eed4bb7a6586",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as Complete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"is_completed\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a4048ccdb10bc078aa3343/complete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a4048ccdb10bc078aa3343",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a3c6863267cf5d92c06f8c",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a3c6863267cf5d92c06f8c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Task 3\",\r\n    \"description\": \"test description\",\r\n    \"priority\": 2,\r\n    \"due_date\": \"2024-02-25\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/user/tasks",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Task 3\",\r\n    \"description\": \"test description edit\",\r\n    \"priority\": 2,\r\n    \"due_date\": \"2024-02-26\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/user/tasks/65a4048ccdb10bc078aa3343",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user",
+								"tasks",
+								"65a4048ccdb10bc078aa3343"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test1@mail.com\",\r\n    \"name\": \"Jane Doe\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/auth/register",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@mail.com\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/auth/login",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base-url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWE0MDA0NzljMTAyNmEwZTRmZTU1NjEiLCJpYXQiOjE3MDUyNDc3OTQsImV4cCI6MTcwNTI3NjU5NH0.d6WSYmq8KPCcubkpgF6-elBDvjfA2GtpClC3BsEFbXA",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWE0MDRhYWNkYjEwYmMwNzhhYTMzNDkiLCJpYXQiOjE3MDUyNDc5MTQsImV4cCI6MTcwNTI3NjcxNH0.lSTi-iZAkVPADcoLV1WElJgGMlIvFiyJDyZjNW4s5HI",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
