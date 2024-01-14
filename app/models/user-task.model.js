@@ -6,6 +6,7 @@ const schema = mongoose.Schema(
     description: String,
     dueDate: Date,
     priority: Number,
+    userId: String,
     isCompleted: { type: Boolean, defaults: false },
     isArchived: { type: Boolean, defaults: false }
   },
@@ -18,6 +19,6 @@ schema.method('toJSON', function () {
   return object
 })
 
-const Task = mongoose.model('task', schema)
+const Task = mongoose.model('user-task', schema)
 
 module.exports = Task
