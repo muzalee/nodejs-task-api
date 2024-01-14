@@ -3,9 +3,9 @@ const { check, validationResult } = require('express-validator')
 const mongoose = require('mongoose')
 
 exports.create = [
-  check('title').notEmpty().withMessage('Title is required'),
-  check('priority').isInt({ gt: 0, lt: 4 }).withMessage('Priority must be between 1 and 3'),
-  check('due_date').matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Due date must be in the format YYYY-MM-DD'),
+  check('title').notEmpty().withMessage('title is required'),
+  check('priority').notEmpty().isInt({ gt: 0, lt: 4 }).withMessage('priority must be between 1 and 3'),
+  check('due_date').notEmpty().matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('due_date must be in the format YYYY-MM-DD'),
   (req, res) => {
     const errors = validationResult(req)
 
@@ -52,6 +52,10 @@ exports.findAll = (req, res) => {
     query.isArchived = req.query.is_archived === '1'
   }
 
+  if (req.query.is_completed !== undefined) {
+    query.isCompleted = req.query.is_completed === '1'
+  }
+
   Task.find(query).sort(sort)
     .then(tasks => {
       if (tasks) {
@@ -84,9 +88,9 @@ exports.findOne = (req, res) => {
 }
 
 exports.update = [
-  check('title').notEmpty().withMessage('Title is required'),
-  check('priority').isInt({ gt: 0, lt: 4 }).withMessage('Priority must be between 1 and 3'),
-  check('due_date').matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Due date must be in the format YYYY-MM-DD'),
+  check('title').notEmpty().withMessage('title is required'),
+  check('priority').notEmpty().isInt({ gt: 0, lt: 4 }).withMessage('priority must be between 1 and 3'),
+  check('due_date').notEmpty().matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('due_date must be in the format YYYY-MM-DD'),
   (req, res) => {
     const errors = validationResult(req)
 
@@ -147,7 +151,7 @@ exports.restore = (req, res) => {
   Task.findByIdAndUpdate(req.params.id, { isArchived: false }, { new: true })
     .then(restoredTask => {
       if (restoredTask) {
-        res.status(200).send(restoredTask)
+        res.status(200).send({ staus: true, data: restoredTask })
       } else {
         res.status(404).send({ status: false, msg: 'Task not found.' })
       }
@@ -157,30 +161,47 @@ exports.restore = (req, res) => {
     })
 }
 
-exports.markComplete = (req, res) => {
-  Task.findByIdAndUpdate(req.params.id, { isCompleted: req.body.isCompleted }, { new: true })
-    .then(completedTask => {
-      if (completedTask) {
-        res.status(200).send(completedTask)
-      } else {
-        res.status(404).send({ message: 'Task not found.' })
-      }
-    })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
+exports.markComplete = [
+  check('is_completed').notEmpty().withMessage('is_completed is required'),
+  (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ status: false, msg: 'Task not found.' })
+    }
+
+    Task.findByIdAndUpdate(req.params.id, { isCompleted: req.body.is_completed }, { new: true })
+      .then(completedTask => {
+        if (completedTask) {
+          res.status(200).send({ status: true, data: completedTask })
+        } else {
+          res.status(404).send({ status: false, msg: 'Task not found.' })
+        }
+      })
+      .catch(err => {
+        res.status(500).send({ status: false, msg: err })
+      })
+  }
+]
 
 exports.delete = (req, res) => {
-  Task.findByIdAndRemove(req.params.id)
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ status: false, msg: 'Task not found.' })
+  }
+
+  Task.findByIdAndDelete(req.params.id)
     .then(deletedTask => {
       if (deletedTask) {
-        res.status(200).send(deletedTask)
+        res.status(200).send({ staus: true, msg: 'Task have been deleted successfully.' })
       } else {
-        res.status(404).send({ message: 'Task not found.' })
+        res.status(404).send({ status: false, msg: 'Task not found.' })
       }
     })
     .catch(err => {
-      res.status(500).send(err)
+      res.status(500).send({ status: false, msg: err })
     })
 }
