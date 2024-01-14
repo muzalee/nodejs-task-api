@@ -1,5 +1,6 @@
 const Task = require('../models').tasks
 const { check, validationResult } = require('express-validator')
+const mongoose = require('mongoose')
 
 exports.create = [
   check('title').notEmpty().withMessage('Title is required'),
@@ -23,7 +24,7 @@ exports.create = [
 
     newTask.save()
       .then(result => {
-        res.status(201).send({ status: true, data: result })
+        res.status(200).send({ status: true, data: result })
       })
       .catch(err => {
         res.status(500).send({ status: false, msg: err })
@@ -35,9 +36,9 @@ exports.findAll = (req, res) => {
   Task.find({ isArchived: false })
     .then(tasks => {
       if (tasks) {
-        res.status(200).send(tasks)
+        res.status(200).send({ status: true, data: tasks })
       } else {
-        res.status(404).send({ message: 'No tasks found.' })
+        res.status(404).send({ status: false, msg: 'No tasks found.' })
       }
     })
     .catch(err => {
@@ -46,16 +47,20 @@ exports.findAll = (req, res) => {
 }
 
 exports.findOne = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ status: false, msg: 'Task not found.' })
+  }
+
   Task.findById(req.params.id)
     .then(task => {
       if (task) {
-        res.status(200).send(task)
+        res.status(200).send({ status: true, data: task })
       } else {
-        res.status(404).send({ message: 'Task not found.' })
+        res.status(404).send({ status: false, msg: 'Task not found.' })
       }
     })
     .catch(err => {
-      res.status(500).send(err)
+      res.status(500).send({ status: false, msg: err })
     })
 }
 
