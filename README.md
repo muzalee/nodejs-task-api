@@ -1,6 +1,11 @@
 
 ## NodeJS API for Task Management with MongoDB
 
+Prerequisition
+
+- install npm
+- install mongodb or use online db
+
 Clone the project
 
 ```bash
@@ -14,6 +19,14 @@ Go to the project directory
 ```
 
 Install dependencies
+
+```bash
+  npm install
+```
+
+Setup env file
+
+copy `.env.example` to `.env` file and change the approriate value
 
 ```bash
   npm install

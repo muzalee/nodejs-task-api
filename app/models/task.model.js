@@ -1,22 +1,23 @@
-module.exports = mongoose => {
-  const schema = mongoose.Schema(
-    {
-      title: String,
-      description: String,
-      dueDate: Date,
-      priority: Number,
-      isCompleted: { type: Boolean, defaults: false },
-      isArchived: { type: Boolean, defaults: false }
-    },
-    { timestamps: true }
-  )
+const mongoose = require('mongoose')
 
-  schema.method('toJSON', function () {
-    const { __v, _id, ...object } = this.toObject()
-    object.id = _id
-    return object
-  })
+const schema = mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    dueDate: Date,
+    priority: Number,
+    isCompleted: { type: Boolean, defaults: false },
+    isArchived: { type: Boolean, defaults: false }
+  },
+  { timestamps: true }
+)
 
-  const Task = mongoose.model('task', schema)
-  return Task
-}
+schema.method('toJSON', function () {
+  const { __v, _id, ...object } = this.toObject()
+  object.id = _id
+  return object
+})
+
+const Task = mongoose.model('task', schema)
+
+module.exports = Task

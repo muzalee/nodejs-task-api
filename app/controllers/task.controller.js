@@ -1,4 +1,4 @@
-const Task = require('../models').tasks
+const Task = require('../models/task.model')
 const { check, validationResult } = require('express-validator')
 const mongoose = require('mongoose')
 

@@ -1,11 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const db = require('./app/config/db.config')
+const taskRoutes = require('./app/routes/task.route')
 const cors = require('cors')
 
 const app = express()
 
 const corsOptions = {
-  origin: 'http://localhost:3000'
+  origin: process.env.MONGODB_URI
 }
 
 app.use(cors(corsOptions))
@@ -16,16 +18,7 @@ app.use(bodyParser.json())
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const db = require('./app/models')
-db.mongoose
-  .connect(db.url)
-  .then(() => {
-    console.log('Connected to the database!')
-  })
-  .catch(err => {
-    console.log('Cannot connect to the database!', err)
-    process.exit()
-  })
+db.connect()
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT, () => {
@@ -36,16 +29,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello world!' })
 })
 
-const taskController = require('./app/controllers/task.controller')
-
-app.post('/tasks', taskController.create)
-app.get('/tasks', taskController.findAll)
-app.get('/tasks/:id', taskController.findOne)
-app.put('/tasks/:id', taskController.update)
-app.delete('/tasks/:id', taskController.delete)
-app.post('/tasks/:id/archive', taskController.archive)
-app.post('/tasks/:id/restore', taskController.restore)
-app.post('/tasks/:id/complete', taskController.markComplete)
+app.use('/tasks', taskRoutes)
 
 // add not found custom message
 app.use((req, res) => {
