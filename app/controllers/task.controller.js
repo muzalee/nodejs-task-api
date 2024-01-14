@@ -33,7 +33,22 @@ exports.create = [
 ]
 
 exports.findAll = (req, res) => {
-  Task.find({ isArchived: false })
+  const query = {}
+
+  if (req.query.priority) {
+    query.priority = parseInt(req.query.priority)
+  }
+
+  const sort = {}
+  if (req.query.sort) {
+    const sortKeys = req.query.sort.split(',')
+    sortKeys.forEach((key) => {
+      const direction = key[0] === '-' ? -1 : 1
+      sort[key.slice(1)] = direction
+    })
+  }
+
+  Task.find(query).sort(sort)
     .then(tasks => {
       if (tasks) {
         res.status(200).send({ status: true, data: tasks })
