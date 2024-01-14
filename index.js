@@ -46,3 +46,8 @@ app.delete('/tasks/:id', taskController.delete)
 app.post('/tasks/:id/archive', taskController.archive)
 app.post('/tasks/:id/restore', taskController.restore)
 app.post('/tasks/:id/complete', taskController.markComplete)
+
+// add not found custom message
+app.use((req, res) => {
+  res.status(404).send({ status: false, msg: 'Requested resource not found.' })
+})
