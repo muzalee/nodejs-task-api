@@ -1,21 +1,35 @@
 const Task = require('../models').tasks
+const { check, validationResult } = require('express-validator')
 
-exports.create = (req, res) => {
-  const newTask = new Task({
-    title: req.body.title,
-    description: req.body.description,
-    dueDate: req.body.dueDate,
-    priority: req.body.priority
-  })
+exports.create = [
+  check('title').notEmpty().withMessage('Title is required'),
+  check('priority').isInt({ gt: 0, lt: 4 }).withMessage('Priority must be between 1 and 3'),
+  check('due_date').matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Due date must be in the format YYYY-MM-DD'),
+  (req, res) => {
+    const errors = validationResult(req)
 
-  newTask.save()
-    .then(result => {
-      res.status(201).send(result)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    const newTask = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      dueDate: new Date(req.body.due_date),
+      priority: req.body.priority,
+      isCompleted: false,
+      isArchived: false
     })
-    .catch(err => {
-      res.status(500).send(err)
-    })
-}
+
+    newTask.save()
+      .then(result => {
+        res.status(201).send({ status: true, data: result })
+      })
+      .catch(err => {
+        res.status(500).send({ status: false, msg: err })
+      })
+  }
+]
 
 exports.findAll = (req, res) => {
   Task.find({ isArchived: false })
