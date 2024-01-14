@@ -57,3 +57,7 @@ Setup linting
   or
   npm run lint-fix
 ```
+
+API examples
+
+- Import [Postman collection](https://github.com/muzalee/nodejs-task-api/blob/main/files/Task%20Management.postman_collection.json)
