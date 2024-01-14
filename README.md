@@ -27,6 +27,12 @@ Start the server
   node .
 ```
 
+Start the server with nodemon (auto restart on file changes)
+
+```bash
+  npm run start
+```
+
 Setup linting
 
 ```bash
